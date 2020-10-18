@@ -6,9 +6,6 @@ object Solution extends InputContext {
     val gridInputs = receiveGridInputs(initLine, Seq.empty[String])
     val wordInputs = receieveWordsInput()
     val initBoard = parsedGridInput(gridInputs)
-    for (g <- initBoard.grids) {
-      println(s"${g.xPos},${g.yPos},${g.character}")
-    }
     val resBoard = fillWords(wordInputs,initBoard).maxBy(_.numberOfValidWords)
     outputBoard(resBoard)
   }
@@ -50,6 +47,10 @@ object Solution extends InputContext {
     } else true
   }
 
+  /** Recieve the inputs for the words
+   *
+   * @return
+   */
   def receieveWordsInput(): Seq[String] = {
     println(s"Please enter the line with words:")
     val inputString = scala.io.StdIn.readLine()
@@ -62,6 +63,11 @@ object Solution extends InputContext {
       receieveWordsInput()
   }
 
+  /** Valid the input of words, they should be with upper case (A-Z)
+   *
+   * @param inputString
+   * @return
+   */
   def validWordInput(inputString: Seq[String]): Boolean = {
     if (inputString.length > maxWords) {
       println(s"Make sure to max number of words input is ${maxWords}")
@@ -72,6 +78,11 @@ object Solution extends InputContext {
     } else true
   }
 
+  /** output the grids into whole board class
+   *
+   * @param inputGrid
+   * @return
+   */
   def parsedGridInput(inputGrid: Seq[String]): wholeBoard = {
     val grids = for (i <- 0 until inputGrid.length;
          j <- 0 until inputGrid(i).split("").length)
@@ -111,6 +122,12 @@ object Solution extends InputContext {
     }.map(_.reverse).reverse
   }
 
+  /** Fill the words into board one by one
+   *
+   * @param words
+   * @param currentBoard
+   * @return
+   */
   def fillWords(words: Seq[String],currentBoard: wholeBoard):Seq[wholeBoard] = {
     words.foldLeft(Seq(currentBoard)){ (bo,w) =>
       if (bo.isEmpty) {
@@ -121,6 +138,12 @@ object Solution extends InputContext {
     }
   }
 
+  /** fill one single word into board
+   *
+   * @param word
+   * @param currentBoard
+   * @return
+   */
   def fillWord(word: String, currentBoard: wholeBoard): Seq[wholeBoard] ={
     val avaialbleGrids = verifyAvailableGrids(currentBoard.grids.filter(g => g.validToFill || g.validToCheck))
     if (avaialbleGrids.map(g => g.length).max < word.length) {
